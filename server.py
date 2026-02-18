@@ -6,7 +6,7 @@ mcp = FastMCP("Suma Server")
 
 UI_DIR = Path(__file__).parent / "ui"
 
-@mcp.resource("ui://sum/{path:path}")
+@mcp.resource("ui://sum/{path}")
 def serve_ui(path: str):
     file_path = UI_DIR / path
 
