@@ -1,51 +1,252 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora: suma</title>
+
+    <style>
+      :root {
+        --blue: #2563eb;
+        --blue-hover: #1d4ed8;
+        --blue-soft: #dbeafe;
+        --text: #0f172a;
+        --muted: #64748b;
+        --card: #ffffff;
+        --bg: #f1f5f9;
+        --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+        --radius: 14px;
+      }
+
+      * {
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+          "Apple Color Emoji", "Segoe UI Emoji";
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .card {
+        width: min(560px, 100%);
+        background: var(--card);
+        border-radius: calc(var(--radius) + 6px);
+        box-shadow: var(--shadow);
+        padding: 24px;
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        text-align: center; /* centra todo */
+      }
+
+      .header {
+        display: grid;
+        place-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      /* icono mediano (relacionado al tamaño del título) */
+      .header .icon {
+        font-size: 34px; /* mediano */
+        line-height: 1;
+        filter: drop-shadow(0 6px 10px rgba(37, 99, 235, 0.18));
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 22px;
+        letter-spacing: 0.2px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin: 18px 0 14px 0;
+        text-align: left; /* labels e inputs más legibles */
+      }
+
+      label {
+        font-size: 12px;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      input[type="number"] {
+        width: 100%;
+        padding: 12px 12px;
+        border-radius: var(--radius);
+        border: 1px solid rgba(37, 99, 235, 0.35);
+        background: var(--blue-soft);
+        outline: none;
+        font-size: 14px;
+        color: var(--text);
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      }
+
+      input[type="number"]::placeholder {
+        color: rgba(15, 23, 42, 0.55);
+      }
+
+      input[type="number"]:focus {
+        border-color: rgba(37, 99, 235, 0.7);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+      }
+
+      .actions {
+        display: flex;
+        justify-content: center; /* botón centrado */
+        margin-top: 4px;
+      }
+
+      button {
+        appearance: none;
+        border: none;
+        border-radius: var(--radius);
+        padding: 12px 18px;
+        background: var(--blue);
+        color: #fff;
+        font-weight: 650;
+        font-size: 14px;
+        cursor: pointer;
+        transition: transform 0.06s ease, background 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 10px 18px rgba(37, 99, 235, 0.25);
+      }
+
+      button:hover {
+        background: var(--blue-hover);
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      #resultado {
+        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: var(--radius);
+        background: rgba(15, 23, 42, 0.03);
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        font-size: 14px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center; /* resultado centrado */
+        text-align: center;
+      }
+
+      .ok {
+        color: #0f172a;
+      }
+
+      .err {
+        color: #b91c1c;
+        background: rgba(185, 28, 28, 0.06);
+        border-color: rgba(185, 28, 28, 0.18);
+      }
+
+      @media (max-width: 440px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
   <body>
-    <h3>Suma de números</h3>
+    <div class="card">
+      <div class="header">
+        <!-- Icono mediano -->
+        <div class="icon" aria-hidden="true">🧑‍🏫🧮</div>
 
-    <input id="a" placeholder="Número A" type="number" />
-    <input id="b" placeholder="Número B" type="number" />
-    <button id="btnSumar">Sumar</button>
+        <!-- Título centrado con icono alineado -->
+        <h3>Calculadora: suma</h3>
 
-    <div id="resultado" style="margin-top:12px;"></div>
+        <p class="subtitle">Ingresa dos números y presiona <b>Sumar</b>.</p>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label for="a">Número A</label>
+          <input id="a" placeholder="Ej: 10" type="number" inputmode="decimal" />
+        </div>
+
+        <div>
+          <label for="b">Número B</label>
+          <input id="b" placeholder="Ej: 5" type="number" inputmode="decimal" />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btnSumar">Sumar</button>
+      </div>
+
+      <div id="resultado" class="ok"></div>
+    </div>
 
     <script type="module">
       import { App } from "https://unpkg.com/@modelcontextprotocol/ext-apps@1.0.1/app-with-deps";
 
       const app = new App({ name: "Sumadora", version: "1.0.0" });
-
-      // Conecta el iframe con el host (ChatGPT Apps / VS Code / etc.)
-      app.connect(); // en el quickstart lo usan así :contentReference[oaicite:2]{index=2}
+      app.connect();
 
       const $a = document.getElementById("a");
       const $b = document.getElementById("b");
       const $btn = document.getElementById("btnSumar");
       const $out = document.getElementById("resultado");
 
+      function setOutput(text, kind = "ok") {
+        $out.textContent = text;
+        $out.classList.remove("ok", "err");
+        $out.classList.add(kind);
+      }
+
       $btn.addEventListener("click", async () => {
         const a = Number($a.value);
         const b = Number($b.value);
 
         if (Number.isNaN(a) || Number.isNaN(b)) {
-          $out.textContent = "Ingresa dos números válidos.";
+          setOutput("Ingresa dos números válidos.", "err");
           return;
         }
 
         try {
-          // Llama al tool del servidor MCP vía tools/call (no fetch /mcp)
           const res = await app.callServerTool({
             name: "suma",
             arguments: { a, b },
           });
 
           const resultado = res.structuredContent?.resultado;
-          $out.textContent = `Resultado: ${resultado}`;
+          setOutput(`Resultado: ${resultado}`, "ok");
         } catch (err) {
           console.error(err);
-          $out.textContent = `Error llamando al tool: ${err?.message ?? err}`;
+          setOutput(`Error llamando al tool: ${err?.message ?? err}`, "err");
         }
       });
+
+      // Enter para sumar
+      [$a, $b].forEach((el) =>
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") $btn.click();
+        })
+      );
     </script>
   </body>
 </html>
