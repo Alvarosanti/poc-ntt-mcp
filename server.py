@@ -4,27 +4,34 @@ from fastmcp.server.apps import ToolUI
 
 mcp = FastMCP("Suma Server")
 
-# UI como resource ui:// (HTML)
-@mcp.resource("ui://sum/view.html")
-def suma_ui() -> str:
-    return Path("./ui/index.html").read_text(encoding="utf-8")
+UI_DIR = Path(__file__).parent / "ui"
 
-# 1) Launcher: visible al modelo, muestra la UI
-@mcp.tool(ui=ToolUI(resource_uri="ui://sum/view.html"))
+@mcp.resource("ui://sum/{path:path}")
+def serve_ui(path: str):
+    file_path = UI_DIR / path
+
+    if not file_path.exists():
+        raise FileNotFoundError(f"{path} no encontrado")
+
+    if file_path.suffix in [".png", ".jpg", ".jpeg", ".gif", ".svg"]:
+        return file_path.read_bytes()
+
+    return file_path.read_text(encoding="utf-8")
+
+@mcp.tool(ui=ToolUI(resource_uri="ui://sum/input-text.html"))
 def abrir_sumadora() -> dict:
     """Abre la UI de la sumadora."""
-    return {}  # mantén esto mínimo para que no “ensucie” el chat
+    return {}
 
-# 2) Lógica: solo visible para la UI
 @mcp.tool(
     ui=ToolUI(
-        resource_uri="ui://sum/view.html",
+        resource_uri="ui://sum/input-text.html",
         visibility=["app"],
     )
 )
 def suma(a: float, b: float) -> dict:
-    """Suma dos números (tool solo para la UI)."""
     return {"resultado": a + b}
+
 
 if __name__ == "__main__":
     mcp.run()
