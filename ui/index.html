@@ -1,32 +1,51 @@
+
 <!DOCTYPE html>
 <html>
   <body>
     <h3>Suma de números</h3>
+
     <input id="a" placeholder="Número A" type="number" />
     <input id="b" placeholder="Número B" type="number" />
-    <button onclick="hacerSuma()">Sumar</button>
-    <div id="resultado"></div>
+    <button id="btnSumar">Sumar</button>
 
-    <script>
-      async function hacerSuma() {
-        const a = +document.getElementById("a").value;
-        const b = +document.getElementById("b").value;
+    <div id="resultado" style="margin-top:12px;"></div>
 
-        const res = await fetch("/mcp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            "jsonrpc": "2.0",
-            method: "call_tool",
-            params: { name: "suma", arguments: { a, b } },
-            id: 1
-          })
-        });
+    <script type="module">
+      import { App } from "https://unpkg.com/@modelcontextprotocol/ext-apps@1.0.1/app-with-deps";
 
-        const data = await res.json();
-        document.getElementById("resultado").innerText =
-          "Resultado: " + data.result.resultado;
-      }
+      const app = new App({ name: "Sumadora", version: "1.0.0" });
+
+      // Conecta el iframe con el host (ChatGPT Apps / VS Code / etc.)
+      app.connect(); // en el quickstart lo usan así :contentReference[oaicite:2]{index=2}
+
+      const $a = document.getElementById("a");
+      const $b = document.getElementById("b");
+      const $btn = document.getElementById("btnSumar");
+      const $out = document.getElementById("resultado");
+
+      $btn.addEventListener("click", async () => {
+        const a = Number($a.value);
+        const b = Number($b.value);
+
+        if (Number.isNaN(a) || Number.isNaN(b)) {
+          $out.textContent = "Ingresa dos números válidos.";
+          return;
+        }
+
+        try {
+          // Llama al tool del servidor MCP vía tools/call (no fetch /mcp)
+          const res = await app.callServerTool({
+            name: "suma",
+            arguments: { a, b },
+          });
+
+          const resultado = res.structuredContent?.resultado;
+          $out.textContent = `Resultado: ${resultado}`;
+        } catch (err) {
+          console.error(err);
+          $out.textContent = `Error llamando al tool: ${err?.message ?? err}`;
+        }
+      });
     </script>
   </body>
 </html>
