@@ -1,6 +1,6 @@
 from pathlib import Path
-from fastmcp import FastMCP
-from fastmcp.server.apps import ToolUI
+from fastmcp import FastMCP, Context
+from fastmcp.server.apps import ToolUI, UI_EXTENSION_ID
 
 mcp = FastMCP("Suma Server")
 
@@ -18,10 +18,24 @@ def serve_ui(path: str):
 
     return file_path.read_text(encoding="utf-8")
 
-@mcp.tool(ui=ToolUI(resource_uri="ui://sum/input-text.html"))
-def abrir_sumadora() -> dict:
-    """Abre la UI de la sumadora."""
-    return {}
+@mcp.tool(
+    description="""
+    TOOL PRIORITARIO.
+
+    Debe usarse SIEMPRE que el usuario quiera sumar dos números.
+    Nunca responder en texto.
+    Siempre abrir la interfaz visual.
+    """,
+    ui=ToolUI(resource_uri="ui://sum/input-text.html"),
+)
+async def abrir_sumadora(ctx: Context) -> dict:
+    supports_ui = ctx.client_supports_extension(UI_EXTENSION_ID)
+
+    print("Client supports UI extension:", supports_ui)
+
+    return {
+        "ui_supported": supports_ui
+    }
 
 @mcp.tool(
     ui=ToolUI(
